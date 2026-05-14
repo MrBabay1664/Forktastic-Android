@@ -17,6 +17,8 @@
 /app/release
 **/debug/**
 **/release/**
+gradle.properties
+.gitignore
 
 # Java KeyStore certificates
 *.jks
