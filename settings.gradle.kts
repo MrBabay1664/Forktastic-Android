@@ -18,12 +18,18 @@
 pluginManagement {
     includeBuild("build-logic")
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
+        gradlePluginPortal()
+        maven { url = uri("./offline-repository") }
     }
 }
+
+// Desktop-only mode: skip Android-only modules when ANDROID_HOME is unavailable (e.g. Flatpak builds).
+// Activate via: DESKTOP_ONLY=true ./gradlew :desktop:packageUberJarForCurrentOS
+val desktopOnly =
+    providers.gradleProperty("desktop.only").orNull?.toBoolean() == true ||
+        System.getenv("DESKTOP_ONLY")?.toBoolean() == true
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver") version "1.0.0"
@@ -49,12 +55,15 @@ dependencyResolutionManagement {
             url = uri("https://central.sonatype.com/repository/maven-snapshots/")
             mavenContent { snapshotsOnly() }
         }
-        maven {
-            url = uri("https://jitpack.io")
-            content {
-                includeGroupByRegex("com\\.github\\..*")
+        if (!desktopOnly) {
+            maven {
+                url = uri("https://jitpack.io")
+                content {
+                    includeGroupByRegex("com\\.github\\..*")
+                }
             }
         }
+        maven { url = uri("./offline-repository") }
     }
 }
 
@@ -76,12 +85,6 @@ toolchainManagement {
         }
     }
 }
-
-// Desktop-only mode: skip Android-only modules when ANDROID_HOME is unavailable (e.g. Flatpak builds).
-// Activate via: DESKTOP_ONLY=true ./gradlew :desktop:packageUberJarForCurrentOS
-val desktopOnly =
-    providers.gradleProperty("desktop.only").orNull?.toBoolean() == true ||
-        System.getenv("DESKTOP_ONLY")?.toBoolean() == true
 
 include(
     ":core:ble",
@@ -120,5 +123,6 @@ if (!desktopOnly) {
         ":core:api",
         ":core:barcode",
         ":feature:widget",
+        ":screenshot-tests",
     )
 }

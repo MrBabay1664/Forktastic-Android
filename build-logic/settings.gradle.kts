@@ -20,12 +20,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url = uri("https://jitpack.io")
-            content {
-                includeGroupByRegex("com\\.github\\..*")
-            }
-        }
+        maven { url = uri("../offline-repository") }
     }
 }
 
@@ -45,12 +40,7 @@ dependencyResolutionManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url = uri("https://jitpack.io")
-            content {
-                includeGroupByRegex("com\\.github\\..*")
-            }
-        }
+        maven { url = uri("../offline-repository") }
     }
     versionCatalogs {
         create("libs") {

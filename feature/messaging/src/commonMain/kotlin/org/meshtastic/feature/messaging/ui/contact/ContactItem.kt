@@ -67,13 +67,15 @@ fun ContactItem(
     onNodeChipClick: () -> Unit = {},
     channels: ChannelSet? = null,
 ) = with(contact) {
-    val isOutlined = !selected && !isActive
+    //val isOutlined = !selected && !isActive
+    val isOutlined = selected or isActive
+
+    val containerColor = if (selected) Color.Gray else MaterialTheme.colorScheme.surfaceContainerLow
 
     val colors =
         if (isOutlined) {
-            CardDefaults.outlinedCardColors(containerColor = Color.Transparent)
+            CardDefaults.outlinedCardColors(containerColor = containerColor)
         } else {
-            val containerColor = if (selected) Color.Gray else MaterialTheme.colorScheme.surfaceVariant
             CardDefaults.cardColors(containerColor = containerColor)
         }
 
@@ -89,16 +91,19 @@ fun ContactItem(
         modifier
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            //.padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = 5.dp, vertical = 1.dp)
             .semantics { contentDescription = shortName },
-        shape = RoundedCornerShape(12.dp),
+        //shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(0.dp),
         colors = colors,
         border = border,
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
             ContactHeader(contact = contact, channels = channels, onNodeChipClick = onNodeChipClick)
 
-            ChatMetadata(modifier = Modifier.padding(top = 4.dp), contact = contact)
+            //ChatMetadata(modifier = Modifier.padding(top = 4.dp), contact = contact)
+            ChatMetadata(modifier = Modifier.padding(top = 0.dp), contact = contact)
         }
     }
 }

@@ -32,8 +32,11 @@ kotest = "6.1.11"
 testRetry = "1.6.4"
 turbine = "1.2.1"
 
+# Compose Screenshot Testing
+compose-screenshot = "0.0.1-alpha14"
+
 # Compose Multiplatform
-compose-multiplatform = "1.11.0-rc01"
+compose-multiplatform = "1.11.0"
 compose-multiplatform-material3 = "1.11.0-alpha07"
 # `androidx-compose-bom-aligned` tracks androidx.compose.{runtime,ui,foundation,animation}
 # artifacts that ship in lockstep with CMP. Kept as a separate version ref so Renovate
@@ -67,10 +70,10 @@ aboutlibraries = "14.2.0"
 jserialcomm = "2.11.4"
 coil = "3.4.0"
 datadog-gradle = "1.26.0"
-dd-sdk-android = "3.9.1"
+dd-sdk-android = "3.10.0"
 detekt = "2.0.0-alpha.3"
 dokka = "2.2.0"
-devtools-ksp = "2.3.7"
+devtools-ksp = "2.3.8"
 firebase-crashlytics-gradle = "3.0.7"
 google-services-gradle = "4.4.4"
 markdownRenderer = "0.40.2"
@@ -78,9 +81,9 @@ okio = "3.17.0"
 uri-kmp = "0.0.21"
 osmdroid-android = "6.1.20"
 spotless = "8.4.0"
-wire = "6.2.0"
+wire = "6.3.0"
 vico = "3.2.0-next.4"
-kable = "0.42.0"
+kable = "0.43.0"
 mqttastic = "0.3.6"
 jmdns = "3.6.3"
 qrcode-kotlin = "4.5.0"
@@ -225,7 +228,7 @@ dokka-android-documentation-plugin = { module = "org.jetbrains.dokka:android-doc
 markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "markdownRenderer" }
 markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdownRenderer" }
 markdown-renderer-android = { module = "com.mikepenz:multiplatform-markdown-renderer-android", version.ref = "markdownRenderer" }
-material = { module = "com.google.android.material:material", version = "1.13.0" }
+material = { module = "com.google.android.material:material", version = "1.14.0" }
 
 kable-core = { module = "com.juul.kable:kable-core", version.ref = "kable" }
 meshtastic-mqtt-client = { module = "org.meshtastic:mqtt-client", version.ref = "mqttastic" }
@@ -241,6 +244,9 @@ kermit = { module = "co.touchlab:kermit", version = "2.1.0" }
 usb-serial-android = { module = "com.github.mik3y:usb-serial-for-android", version = "3.10.0" }
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+
+# Screenshot Testing
+screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "compose-screenshot" }
 
 # Build Logic
 android-gradleApiPlugin = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
@@ -270,6 +276,7 @@ jna = { module = "net.java.dev.jna:jna", version = "5.18.1" }
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+compose-screenshot = { id = "com.android.compose.screenshot", version.ref = "compose-screenshot" }
 
 # Jetbrains
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
@@ -300,6 +307,7 @@ wire = { id = "com.squareup.wire", version.ref = "wire" }
 room = { id = "androidx.room3", version.ref = "room" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 test-retry = { id = "org.gradle.test-retry", version.ref = "testRetry" }
+flatpak-gradle-generator = { id = "io.github.jwharm.flatpak-gradle-generator", version = "1.7.0" }
 
 # Meshtastic
 meshtastic-android-application = { id = "meshtastic.android.application" }

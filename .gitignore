@@ -20,6 +20,8 @@
 gradle.properties
 .gitignore
 
+java_pid*
+
 # Java KeyStore certificates
 *.jks
 keystore.properties
@@ -29,6 +31,9 @@ keystore.properties
 
 # Kotlin compiler
 .kotlin
+
+# Generated docs screenshots (regenerated from reference images)
+docs/screenshots/
 
 # VS code
 .vscode/settings.json
@@ -62,3 +67,6 @@ firebase-debug.log
 /coil/
 /kable/
 .opencode/
+/desktop/bin/
+/build-logic/convention/bin/
+/.specify/extensions/.cache/

@@ -19,6 +19,7 @@ package org.meshtastic.feature.settings.radio
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import dev.mokkery.MockMode
+import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
@@ -28,6 +29,7 @@ import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -46,6 +48,7 @@ import org.meshtastic.core.domain.usecase.settings.RadioConfigUseCase
 import org.meshtastic.core.domain.usecase.settings.RadioResponseResult
 import org.meshtastic.core.domain.usecase.settings.ToggleAnalyticsUseCase
 import org.meshtastic.core.domain.usecase.settings.ToggleHomoglyphEncodingUseCase
+import org.meshtastic.core.model.MqttProbeStatus
 import org.meshtastic.core.model.Node
 import org.meshtastic.core.repository.AnalyticsPrefs
 import org.meshtastic.core.repository.FileService
@@ -222,6 +225,68 @@ class RadioConfigViewModelTest {
     }
 
     @Test
+    fun `probeMqttConnection updates status for success`() = runTest {
+        everySuspend { mqttManager.probe("mqtt.example.com", true, "user", "pass") }
+            .calls {
+                delay(1)
+                MqttProbeStatus.Success(serverInfo = "client=test")
+            }
+
+        viewModel.probeMqttConnection("mqtt.example.com", true, "user", "pass")
+
+        assertEquals(MqttProbeStatus.Probing, viewModel.mqttProbeStatus.value)
+
+        advanceTimeBy(1)
+        runCurrent()
+
+        assertEquals(MqttProbeStatus.Success(serverInfo = "client=test"), viewModel.mqttProbeStatus.value)
+        verifySuspend { mqttManager.probe("mqtt.example.com", true, "user", "pass") }
+    }
+
+    @Test
+    fun `probeMqttConnection updates status for timeout`() = runTest {
+        everySuspend { mqttManager.probe("mqtt.example.com", false, null, null) } returns MqttProbeStatus.Timeout(5_000)
+
+        viewModel.probeMqttConnection("mqtt.example.com", false, null, null)
+        runCurrent()
+
+        assertEquals(MqttProbeStatus.Timeout(5_000), viewModel.mqttProbeStatus.value)
+        verifySuspend { mqttManager.probe("mqtt.example.com", false, null, null) }
+    }
+
+    @Test
+    fun `probeMqttConnection converts thrown exception to other status`() = runTest {
+        everySuspend { mqttManager.probe("mqtt.example.com", true, null, null) }
+            .calls { throw IllegalStateException("boom") }
+
+        viewModel.probeMqttConnection("mqtt.example.com", true, null, null)
+        runCurrent()
+
+        assertEquals(MqttProbeStatus.Other(message = "boom"), viewModel.mqttProbeStatus.value)
+        verifySuspend { mqttManager.probe("mqtt.example.com", true, null, null) }
+    }
+
+    @Test
+    fun `clearMqttProbeStatus resets probe state`() = runTest {
+        everySuspend { mqttManager.probe("mqtt.example.com", false, null, null) }
+            .calls {
+                delay(1)
+                MqttProbeStatus.Success(serverInfo = "client=test")
+            }
+
+        viewModel.probeMqttConnection("mqtt.example.com", false, null, null)
+        assertEquals(MqttProbeStatus.Probing, viewModel.mqttProbeStatus.value)
+
+        viewModel.clearMqttProbeStatus()
+        assertEquals(null, viewModel.mqttProbeStatus.value)
+
+        advanceTimeBy(1)
+        runCurrent()
+
+        assertEquals(null, viewModel.mqttProbeStatus.value)
+    }
+
+    @Test
     fun `updateChannels calls useCase for each changed channel`() = runTest {
         val node = Node(num = 123, user = User(id = "!123"))
         nodeRepository.setNodes(listOf(node))
@@ -337,19 +402,34 @@ class RadioConfigViewModelTest {
     }
 
     @Test
-    fun `initDestNum updates value correctly including null`() = runTest {
-        viewModel = createViewModel()
-
-        // Initial setup should take the flow value, but let's just force update it
-        viewModel.initDestNum(123)
-        assertEquals(
-            123,
-            viewModel.destNode.value?.num ?: 123,
-        ) // the flow combine might need yielding, but we can just check it doesn't crash
-
-        // The bug was that null was ignored. Here we test we can pass null
-        // Since we can't easily read destNumFlow directly, we can just call it to ensure no crashes
-        viewModel.initDestNum(null)
+    fun `destNum from SavedStateHandle resolves destNode`() = runTest {
+        val node = Node(num = 456, user = User(id = "!456"))
+        nodeRepository.setNodes(listOf(node))
+        viewModel =
+            RadioConfigViewModel(
+                savedStateHandle = SavedStateHandle(mapOf("destNum" to 456)),
+                radioConfigRepository = radioConfigRepository,
+                packetRepository = packetRepository,
+                serviceRepository = serviceRepository,
+                nodeRepository = nodeRepository,
+                locationRepository = locationRepository,
+                mapConsentPrefs = mapConsentPrefs,
+                analyticsPrefs = analyticsPrefs,
+                homoglyphEncodingPrefs = homoglyphEncodingPrefs,
+                toggleAnalyticsUseCase = toggleAnalyticsUseCase,
+                toggleHomoglyphEncodingUseCase = toggleHomoglyphEncodingUseCase,
+                importProfileUseCase = importProfileUseCase,
+                exportProfileUseCase = exportProfileUseCase,
+                exportSecurityConfigUseCase = exportSecurityConfigUseCase,
+                installProfileUseCase = installProfileUseCase,
+                radioConfigUseCase = radioConfigUseCase,
+                adminActionsUseCase = adminActionsUseCase,
+                processRadioResponseUseCase = processRadioResponseUseCase,
+                locationService = locationService,
+                fileService = fileService,
+                mqttManager = mqttManager,
+            )
+        assertEquals(456, viewModel.destNode.value?.num)
     }
 
     @Test

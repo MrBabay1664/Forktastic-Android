@@ -48,7 +48,7 @@ fun ChannelItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
         ) {
-            AssistChip(onClick = onClick, label = { Text(text = "$index", color = fontColor) })
+            AssistChip(onClick = onClick, label = { Text(text = "#$index", color = fontColor) })
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
@@ -64,6 +64,6 @@ fun ChannelItem(
 
 @Preview
 @Composable
-private fun ChannelItemPreview() {
+fun ChannelItemPreview() {
     AppTheme { ChannelItem(index = 0, title = "Medium Fast", enabled = true) {} }
 }

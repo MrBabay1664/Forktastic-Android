@@ -707,6 +707,7 @@ mute_add
 mute_always
 mute_notifications
 mute_remove
+mute_selected
 mute_status_always
 mute_status_muted_for_days
 mute_status_muted_for_hours
@@ -1103,6 +1104,7 @@ store_forward
 store_forward_config
 store_forward_enabled
 subnet
+success
 super_deep_sleep_duration_seconds
 supported
 supported_by_community
@@ -1121,8 +1123,19 @@ tak_role_sniper
 tak_role_teamlead
 tak_role_teammember
 tak_role_unspecified
+tak_server
 tak_server_enabled
 tak_server_enabled_desc
+tak_server_export_data_package_desc
+tak_server_loading
+tak_server_section
+tak_server_test_card_title
+tak_server_test_idle
+tak_server_test_result_bytes
+tak_server_test_result_unknown_error
+tak_server_test_results
+tak_server_test_run
+tak_server_test_running
 tak_team
 tak_team_blue
 tak_team_brown
@@ -1212,6 +1225,7 @@ unknown_username
 unmessageable
 unmonitored_or_infrastructure
 unmute
+unmute_selected
 unrecognized
 unset
 up_down_select_input_enabled
@@ -1268,6 +1282,7 @@ wifi_provision_connect_failed
 wifi_provision_description
 wifi_provision_device_found
 wifi_provision_device_found_detail
+wifi_provision_hidden_network
 wifi_provision_mpwrd_disclaimer
 wifi_provision_no_networks
 wifi_provision_scan_failed
