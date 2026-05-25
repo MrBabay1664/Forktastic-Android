@@ -17,8 +17,6 @@
 /app/release
 **/debug/**
 **/release/**
-gradle.properties
-.gitignore
 
 java_pid*
 

@@ -198,20 +198,21 @@ fun MessageItem(
             hasSamePrev = hasSamePrev,
             hasSameNext = hasSameNext,
         )
-    val messageModifier =
-        Modifier.padding(horizontal = 8.dp)
+    /*val messageModifier =
+        Modifier.padding(horizontal = 2.dp)
             .then(
                 if (containsBel) {
                     Modifier.border(2.dp, color = MessageItemColors.Red, shape = messageShape)
                 } else {
                     Modifier
                 },
-            )
+            )*/
+    val messageModifier = Modifier
     val senderName = if (message.fromLocal) ourNode.user.long_name else node.user.long_name
     val messageA11yText = stringResource(Res.string.a11y_message_from, senderName, message.text)
     if (showUserName && !message.fromLocal) {
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -249,7 +250,8 @@ fun MessageItem(
         color = containerColor,
         contentColor = contentColor,
         shape = messageShape,
-        border = BorderStroke(0.5.dp, nodeColor),
+        //border = BorderStroke(2.dp, nodeColor),
+        border = null,
     ) {
         Column(modifier = Modifier.width(IntrinsicSize.Max)) {
             OriginalMessageSnippet(
@@ -272,7 +274,7 @@ fun MessageItem(
                         } else {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                horizontalArrangement = Arrangement.spacedBy(0.dp),
                             ) {
                                 Icon(
                                     imageVector = MeshtasticIcons.HopCount,

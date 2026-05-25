@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -151,11 +152,11 @@ fun NodeItem(
             }
         }
 
-    Card(modifier = modifier.fillMaxWidth(), colors = cardColors) {
+    Card(modifier = modifier.fillMaxWidth(), colors = cardColors, shape = RoundedCornerShape(0.dp)) {
         Column(
             modifier =
             Modifier.combinedClickable(onClick = onClick, onLongClick = onLongClick).fillMaxWidth().padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             NodeItemHeader(
                 thatNode = thatNode,
@@ -195,12 +196,13 @@ fun NodeItem(
 
             NodeBatteryPositionRow(
                 thatNode = thatNode,
+                isThisNode = isThisNode,
                 distance = distance,
                 system = system,
                 contentColor = contentColor,
             )
 
-            NodeSignalRow(thatNode = thatNode, isThisNode = isThisNode, contentColor = contentColor)
+            //NodeSignalRow(thatNode = thatNode, isThisNode = isThisNode, contentColor = contentColor)
 
             val sensorItems = gatherSensors(thatNode, tempInFahrenheit, contentColor)
             if (sensorItems.isNotEmpty()) {
@@ -215,6 +217,7 @@ fun NodeItem(
 @Composable
 private fun NodeBatteryPositionRow(
     thatNode: Node,
+    isThisNode: Boolean,
     distance: String?,
     system: Config.DisplayConfig.DisplayUnits,
     contentColor: Color,
@@ -224,13 +227,27 @@ private fun NodeBatteryPositionRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MaterialBatteryInfo(
-            level = thatNode.batteryLevel ?: 0,
-            voltage = thatNode.voltage ?: 0f,
-            contentColor = contentColor,
-        )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row (
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            MaterialBatteryInfo(
+                modifier = Modifier,
+                level = thatNode.batteryLevel ?: 0,
+                voltage = thatNode.voltage ?: 0f,
+                contentColor = contentColor,
+            )
+
+            NodeSignalRow(
+                modifier = Modifier,
+                thatNode = thatNode,
+                isThisNode = isThisNode,
+                contentColor = contentColor
+            )
+        }
+        
+
+        Row(horizontalArrangement = Arrangement.spacedBy(0.dp), verticalAlignment = Alignment.CenterVertically) {
             if (distance != null) {
                 DistanceInfo(distance = distance, contentColor = contentColor)
             }
@@ -247,9 +264,9 @@ private fun NodeBatteryPositionRow(
 }
 
 @Composable
-private fun NodeSignalRow(thatNode: Node, isThisNode: Boolean, contentColor: Color) {
+private fun NodeSignalRow(modifier: Modifier = Modifier.fillMaxWidth(), thatNode: Node, isThisNode: Boolean, contentColor: Color) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
